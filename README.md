@@ -1,4 +1,3 @@
-```markdown
 # ESP32 Custom Ultrasonic Sensor Simulation
 
 This project simulates an ESP32 reading a custom HC-SR04 ultrasonic sensor in VS Code. The distance is dynamically controlled using a potentiometer.
@@ -35,4 +34,3 @@ The free version of the Wokwi VS Code extension does not support graphical drag-
 1. Go to [wokwi.com](https://wokwi.com) and build your updated circuit in the web browser.
 2. Click the `{}` (Code) tab in the web editor to view the underlying JSON.
 3. Copy the updated code and paste it into your local `diagram.json` file.
-```
