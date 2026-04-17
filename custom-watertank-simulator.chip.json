@@ -5,12 +5,41 @@
     "VCC",
     "GND",
     "PUMP_IN",
-    "LVL_OUT"
+    "LVL_OUT",
+    "USE_OUT"
   ],
   "controls": [
-    { "type": "slider", "id": "use_sw", "label": "Use Valve (0=OFF, 1=ON)", "min": 0, "max": 1, "value": 0 },
-    { "type": "slider", "id": "use_rate", "label": "Usage Rate (x10000 cm/sec)", "min": 0, "max": 100000, "value": 15000 },
-    { "type": "slider", "id": "leak_sw", "label": "Leak Valve (0=OFF, 1=ON)", "min": 0, "max": 1, "value": 0 },
-    { "type": "slider", "id": "leak_rate", "label": "Leak Rate (x10000 cm/sec)", "min": 0, "max": 100000, "value": 5000 }
+    {
+      "type": "slider",
+      "id": "use_sw",
+      "label": "Use Valve (0=OFF, 1=ON)",
+      "min": 0,
+      "max": 1,
+      "value": 0
+    },
+    {
+      "type": "slider",
+      "id": "use_rate",
+      "label": "Usage Rate (x10000 cm/sec)",
+      "min": 0,
+      "max": 100000,
+      "value": 15000
+    },
+    {
+      "type": "slider",
+      "id": "leak_sw",
+      "label": "Leak Valve (0=OFF, 1=ON)",
+      "min": 0,
+      "max": 1,
+      "value": 0
+    },
+    {
+      "type": "slider",
+      "id": "leak_rate",
+      "label": "Leak Rate (x10000 cm/sec)",
+      "min": 0,
+      "max": 100000,
+      "value": 5000
+    }
   ]
 }

@@ -29,8 +29,8 @@
     {
       "type": "chip-custom-watertank-simulator",
       "id": "chip2",
-      "top": -238.98,
-      "left": -283.2,
+      "top": -267.78,
+      "left": -273.6,
       "attrs": {}
     }
   ],
@@ -51,7 +51,8 @@
     [ "chip2:LVL_OUT", "chip1:DIST_IN", "blue", [ "h165.01", "v115.2" ] ],
     [ "chip2:VCC", "bb1:tp.1", "red", [ "h-28.8", "v441.3" ] ],
     [ "chip2:GND", "bb1:tn.1", "black", [ "h-9.6", "v441.7" ] ],
-    [ "esp:4", "chip2:PUMP_IN", "gold", [ "h48", "v-240", "h-326.4" ] ]
+    [ "esp:4", "chip2:PUMP_IN", "gold", [ "h48", "v-240", "h-326.4" ] ],
+    [ "chip2:USE_OUT", "esp:0", "orange", [ "h366.61", "v278.4" ] ]
   ],
   "dependencies": {}
 }
