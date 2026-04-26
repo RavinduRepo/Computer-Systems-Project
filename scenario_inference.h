@@ -2,10 +2,10 @@
 // INFERENCE TEST SCENARIO (3-CLASS)
 // ═══════════════════════════════════════════════════════
 
-#ifndef SCENARIO_H
-#define SCENARIO_H
+#ifndef SCENARIO_INFERENCE_H
+#define SCENARIO_INFERENCE_H
 
-#include <cstdint>
+#include <stdint.h>
 
 typedef enum {
   ACT_USE_SW,

@@ -1,7 +1,7 @@
 #include "wokwi-api.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "scenario.h" // Import your automated script
+#include "scenario_inference.h" // Import your automated script
 
 // --- MODE TOGGLE ---
 // 0 = Manual Mode (UI Sliders)

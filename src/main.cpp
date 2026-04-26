@@ -20,6 +20,7 @@
 
 #include <TensorFlowLite_ESP32.h>
 #include "tensorflow/lite/micro/all_ops_resolver.h"
+#include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
@@ -55,6 +56,7 @@ uint8_t tensor_arena[TENSOR_ARENA_SIZE];
 tflite::MicroInterpreter* interpreter;
 TfLiteTensor* input;
 TfLiteTensor* output;
+tflite::ErrorReporter* error_reporter;
 
 /* ── Ultrasonic ─────────────────────────────────── */
 float read_distance() {
@@ -123,9 +125,11 @@ void setup() {
   const tflite::Model* model = tflite::GetModel(water_fault_model);
 
   static tflite::AllOpsResolver resolver;
+  static tflite::MicroErrorReporter micro_error_reporter;
+  error_reporter = &micro_error_reporter;
 
   static tflite::MicroInterpreter static_interpreter(
-    model, resolver, tensor_arena, TENSOR_ARENA_SIZE);
+    model, resolver, tensor_arena, TENSOR_ARENA_SIZE, error_reporter);
 
   interpreter = &static_interpreter;
 
@@ -196,7 +200,7 @@ void loop() {
     var
   };
 
-  normalise_features(features);
+  normalise(features);
 
   for (int i = 0; i < N_FEATURES; i++) {
     input->data.f[i] = features[i];
