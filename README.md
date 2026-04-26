@@ -22,6 +22,7 @@ iwr https://wokwi.com/ci/install.ps1 -useb | iex
 Make sure your terminal is in the project's root folder, then run:
 ```powershell
 wokwi-cli chip compile custom-ultrasonic-sensor.c -o custom-ultrasonic-sensor.chip.wasm
+wokwi-cli chip compile custom-watertank-simulator.c -o custom-watertank-simulator.chip.wasm
 ```
 do the above for all the custom chips 
 

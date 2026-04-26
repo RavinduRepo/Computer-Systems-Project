@@ -6,10 +6,10 @@
 // --- MODE TOGGLE ---
 // 0 = Manual Mode (UI Sliders)
 // 1 = Automated Mode (Reads from scenario.h)
-#define SIMULATION_MODE 0 
+#define SIMULATION_MODE 1 
 
 // --- TANK CONFIGURATION ---
-#define TANK_HEIGHT_CM 200.0f
+#define TANK_HEIGHT_CM 300.0f
 #define SENSOR_CLEARANCE_CM 20.0f   
 #define PUMP_FILL_RATE 20.0f        
 #define CM_TO_VOLTS 0.01f           
@@ -121,6 +121,6 @@ void chip_init(void) {
   chip->physics_timer = timer_init(&physics_config);
   timer_start(chip->physics_timer, 100000, true); 
 
-  chip->water_level_cm = 100.0f; 
+  chip->water_level_cm = 200.0f; 
   pin_write(chip->pin_use_out, LOW);
 }
