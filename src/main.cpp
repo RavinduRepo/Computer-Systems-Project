@@ -10,13 +10,18 @@ const int echoPin = 18;
 const int pumpPin = 4;
 const int waterUsePin = 6;
 
+// --- Tank Configuration ---
+const float tank_area_cm2 = 100.0; // Customize: Cross-sectional area in cm²
+const float lower_bound_cm = 160.0; // Pump ON when distance reaches this low-water threshold
+const float upper_bound_cm = 100.0; // Pump OFF when distance reaches this high-water threshold
+
 // --- Network & MQTT Settings ---
 const char *ssid = "Wokwi-GUEST";
 const char *password = "";
 
 // IMPORTANT: Change this to your Arch Linux machine's local LAN IP (e.g.,
 // 192.168.x.x)
-const char *mqtt_server = "192.168.8.199";
+const char *mqtt_server = "172.30.112.1";
 const int mqtt_port = 1883;
 const char *mqtt_topic = "sensors/group05/watertank/data";
 
@@ -26,6 +31,11 @@ PubSubClient client(espClient);
 long duration;
 float distance;
 int isUsingWater;
+bool pumpOn = false;
+
+// Previous measurements for rate calculation
+float prev_distance = 0.0;
+unsigned long prev_time = 0;
 
 // Timer to avoid flooding the MQTT broker
 unsigned long lastMsg = 0;
@@ -77,6 +87,9 @@ void setup() {
   pinMode(pumpPin, OUTPUT);
   pinMode(waterUsePin, INPUT);
 
+  // Start with the pump off
+  digitalWrite(pumpPin, LOW);
+
   // Initialize Network
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
@@ -104,10 +117,34 @@ void loop() {
     distance = duration * 0.034 / 2;
     isUsingWater = digitalRead(waterUsePin);
 
+    // --- Pump control based on level bounds ---
+    if (distance >= lower_bound_cm) {
+      pumpOn = true;
+    } else if (distance <= upper_bound_cm) {
+      pumpOn = false;
+    }
+    digitalWrite(pumpPin, pumpOn ? HIGH : LOW);
+
+    // --- Calculate Water Rate ---
+    float water_rate_cm_per_s = 0.0;
+    if (prev_time != 0) {
+      float delta_distance = prev_distance - distance; // Negative when water level drops
+      float delta_time_s = (now - prev_time) / 1000.0;
+      water_rate_cm_per_s = delta_distance / delta_time_s;
+    }
+    prev_distance = distance;
+    prev_time = now;
+
+    // --- Calculate Volume Rate ---
+    float volume_rate_cm3_per_s = tank_area_cm2 * water_rate_cm_per_s;
+
     // --- Create JSON Payload ---
     StaticJsonDocument<200> doc;
     doc["water_level_cm"] = distance;
     doc["status"] = (isUsingWater == HIGH) ? "using_water" : "idle";
+    doc["pump_state"] = pumpOn ? "ON" : "OFF";
+    doc["water_rate_cm_per_s"] = water_rate_cm_per_s;
+    doc["volume_rate_cm3_per_s"] = volume_rate_cm3_per_s;
 
     char jsonBuffer[512];
     serializeJson(doc, jsonBuffer);
@@ -115,6 +152,14 @@ void loop() {
     // --- Publish to Broker ---
     Serial.print("Publishing message: ");
     Serial.println(jsonBuffer);
+    Serial.print("Pump state: ");
+    Serial.println(pumpOn ? "ON" : "OFF");
+    Serial.print("Water rate: ");
+    Serial.print(water_rate_cm_per_s);
+    Serial.println(" cm/s");
+    Serial.print("Volume rate: ");
+    Serial.print(volume_rate_cm3_per_s);
+    Serial.println(" cm³/s");
     client.publish(mqtt_topic, jsonBuffer);
   }
 }
