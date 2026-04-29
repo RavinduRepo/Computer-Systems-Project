@@ -10,11 +10,14 @@ const int trigPin = 5;
 const int echoPin = 18;
 const int pumpPin = 4;
 const int waterUsePin = 6;
+// Note: Adjust pin numbers as needed for your specific hardware setup
+
 
 // --- Tank Configuration ---
 const float tank_area_cm2 = 100.0; // Customize: Cross-sectional area in cm²
 const float lower_bound_cm = 160.0; // Pump ON when distance reaches this low-water threshold
 const float upper_bound_cm = 100.0; // Pump OFF when distance reaches this high-water threshold
+const float bottom_bound_cm = 200.0; // Distance when tank is empty (used for rate calculations)
 
 // Warning thresholds
 const float leak_threshold_cm_per_s = -5.0; // Sudden drop indicating leak
@@ -27,14 +30,16 @@ const char *password = WIFI_PASSWORD;
 const char *mqtt_server = MQTT_SERVER_IP;
 const int mqtt_port = MQTT_SERVER_PORT;
 const char *mqtt_topic = "sensors/group05/watertank/data";
+// Note: Adjust MQTT topic as needed for your application
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-
+// --- State Variables ---
 long duration;
 float distance;
 int isUsingWater;
 bool pumpOn = false;
+
 
 // Previous measurements for rate calculation
 // We initialize prev_distance to 0.0 and prev_time to 0 to handle the first loop iteration gracefully.
@@ -52,7 +57,7 @@ void setup_wifi() {
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
-
+  // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -153,7 +158,7 @@ void loop() {
 
     // --- Create JSON Payload ---
     StaticJsonDocument<200> doc;
-    doc["water_level_cm"] = distance;
+    doc["water_level_cm"] = bottom_bound_cm-distance;
     doc["water_rate_Lpm"] = volume_rate_cm3_per_s * 0.001 * 60; // Convert cm³/s to L/min
     doc["usage_status"] = (isUsingWater == HIGH) ? "active" : "idle";
     doc["pump_status"] = pumpOn ? "on" : "off";
