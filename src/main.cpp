@@ -37,6 +37,8 @@ int isUsingWater;
 bool pumpOn = false;
 
 // Previous measurements for rate calculation
+// We initialize prev_distance to 0.0 and prev_time to 0 to handle the first loop iteration gracefully.
+// On the first loop, since prev_time is 0, we will skip rate calculation and just set prev_distance and prev_time to the current values.
 float prev_distance = 0.0;
 unsigned long prev_time = 0;
 
